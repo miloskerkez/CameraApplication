@@ -40,17 +40,17 @@ public class MainActivity extends Activity {
             List<String> tFileList = new ArrayList<String>();
 
             //It have to be matched with the directory in SDCard
-            File f = new File("/sdcard/image/");
+            /*File f = new File("/SD kartica/DCIM/100MEDIA");
 
             File[] files=f.listFiles();
 
             for(int i=0; i<files.length; i++)
             {
                 File file = files[i];
-              /*It's assumed that all file in the path
-                are in supported type*/
+              *//*It's assumed that all file in the path
+                are in supported type*//*
                 items.add(new Item(i, file.getAbsolutePath()));
-            }
+            }*/
 
             /*items.add(new Item("Image 1", R.drawable.ic_launcher));
             items.add(new Item("Image 2", R.drawable.ic_launcher));
