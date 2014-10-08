@@ -2,11 +2,13 @@ package com.codecentric.socialphotoapplication;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,7 +32,6 @@ public class CameraActivity extends Activity {
     private Camera cam;
     private CameraPreview camPreview;
     private SurfaceView surView;
-
 
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
@@ -140,7 +141,7 @@ public class CameraActivity extends Activity {
     };
 
 
-    public void captureButton(View v){
+   /* public void captureButton(View v){
     Button captureButton = (Button) findViewById(R.id.button_capture);
     captureButton.setOnClickListener(
             new View.OnClickListener() {
@@ -151,6 +152,16 @@ public class CameraActivity extends Activity {
         }
     }
     );
+    }*/
+
+
+    public void capturePicture(View view){
+            //Intent intent = new Intent(this, CameraActivity.class);
+        //intent.putExtra();
+            cam.takePicture(null, null, pic);
+            //startActivity(intent);
+
+
     }
 
     private void releaseCamera(){
@@ -171,42 +182,5 @@ public class CameraActivity extends Activity {
     }
 
 
-    /*public static int getCameraDisplayOrientation(Activity activity,
-                                                  int cameraId, android.hardware.Camera camera)
-    {
-        android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
-        android.hardware.Camera.getCameraInfo(cameraId, info);
-        int rotation = activity.getWindowManager().getDefaultDisplay()
-                .getRotation();
-        int degrees = 0;
-        switch (rotation)
-        {
-            case Surface.ROTATION_0:
-                degrees = 0;
-                break;
-            case Surface.ROTATION_90:
-                degrees = 90;
-                break;
-            case Surface.ROTATION_180:
-                degrees = 180;
-                break;
-            case Surface.ROTATION_270:
-                degrees = 270;
-                break;
-        }
-
-        int result;
-        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT)
-        {
-            result = (info.orientation + degrees) % 360;
-            result = (360 - result) % 360; // compensate the mirror
-        } else
-        { // back-facing
-            result = (info.orientation - degrees + 360) % 360;
-        }
-
-        return result;
-    }
-*/
 
 }
