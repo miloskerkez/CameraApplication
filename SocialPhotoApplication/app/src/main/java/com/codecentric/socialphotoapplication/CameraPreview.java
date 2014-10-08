@@ -2,6 +2,7 @@ package com.codecentric.socialphotoapplication;
 
 import android.content.Context;
 import android.hardware.Camera;
+import android.media.CameraProfile;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -29,9 +30,29 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     public void surfaceCreated(SurfaceHolder holder) {
         // The Surface has been created, now tell the camera where to draw the preview.
+       /* int mRotation = getCameraDisplayOrientation();
+
+        Camera.Parameters parameters = mCamera.getParameters();
+
+        parameters.setRotation(mRotation); //set rotation to save the picture
+
+        mCamera.setDisplayOrientation(90); //set the rotation for preview camera
+
+        mCamera.setParameters(parameters);
+
+        mCamera.setDisplayOrientation(90);*/
+
+        mCamera.setDisplayOrientation(90);
+
         try {
             mCamera.setPreviewDisplay(holder);
-            mCamera.startPreview();
+            mCamera.setPreviewCallback(new Camera.PreviewCallback() {
+                @Override
+                public void onPreviewFrame(byte[] bytes, Camera camera) {
+
+                }
+            });
+          // mCamera.startPreview();
         } catch (IOException e) {
             Log.d(VIEW_LOG_TAG, "Error setting camera preview: " + e.getMessage());
         }
