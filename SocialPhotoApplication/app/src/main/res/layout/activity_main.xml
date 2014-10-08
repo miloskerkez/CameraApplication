@@ -7,42 +7,4 @@
     android:baselineAligned="false"
     android:paddingStart="10dp"
     android:paddingEnd="10dp">
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:weightSum="1">
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/button_asc"
-            android:id="@+id/button"
-            android:background="#00ffffff"
-            android:textColor="#c8ffffff"
-            android:textSize="40dp"
-            android:textStyle="italic" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.89" />
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/imageButton5"
-            android:background="@drawable/ic_action_camera"
-            android:layout_weight="0.11"
-            android:onClick="startCamera" />
-
-    </LinearLayout>
-
-    <GridView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/gridView"
-        android:layout_gravity="center_horizontal"
-        android:numColumns="2" />
 </LinearLayout>

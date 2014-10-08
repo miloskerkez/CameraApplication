@@ -1,27 +1,84 @@
 package com.codecentric.socialphotoapplication;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 
+import java.io.File;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements View.OnCreateContextMenuListener {
+
+    GridView gridView;
+    ImageAdapter imageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        GridView gridView = (GridView) findViewById(R.id.gridView);
+        ActionBar mActionBar = getActionBar();
+        mActionBar.setDisplayShowHomeEnabled(false);
+        mActionBar.setDisplayShowTitleEnabled(false);
+        LayoutInflater mInflater = LayoutInflater.from(this);
+
+        View mCustomView = mInflater.inflate(R.layout.actionbar, null);
+
+        mActionBar.setCustomView(mCustomView);
+        mActionBar.setDisplayShowCustomEnabled(true);
+    }
+
+    private void setContentView() {
         try {
-            //gridView.setAdapter(new LazyImageAdapter(this, null, "/sdcard/image/"));
-            gridView.setAdapter(new ImageAdapter(this));
+            File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES), "MyCameraApp");
+            if (mediaStorageDir.listFiles().length > 0) {
+                setContentView(R.layout.main_grid);
+            } else {
+                setContentView(R.layout.text);
+            }
+        }
+        catch (Exception e) {
+            setContentView(R.layout.text);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refresh();
+    }
+
+    private void refresh() {
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "MyCameraApp");
+        try {
+            if (mediaStorageDir.listFiles().length > 0) {
+                setContentView(R.layout.main_grid);
+                gridView = (GridView) findViewById(R.id.gridView);
+                imageAdapter = new ImageAdapter(this, true);
+                registerForContextMenu(gridView);
+                try {
+                    //gridView.setAdapter(new LazyImageAdapter(this, null, "/sdcard/image/"));
+                    gridView.setAdapter(imageAdapter);
+                    System.out.println("setAdapter");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                setContentView(R.layout.text);
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            setContentView(R.layout.text);
         }
     }
 
@@ -48,4 +105,42 @@ public class MainActivity extends Activity {
         Intent intent = new Intent(this, CameraActivity.class);
         startActivity(intent);
     }
+
+    public void toggleSorting(View v) {
+        imageAdapter.toggleSorting();
+        gridView.invalidateViews();
+        System.out.println("sort");
+        Button btn = (Button) v;
+        btn.setText((btn.getText().equals("Asc"))? "Desc" : "Asc");
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+        super.onCreateContextMenu(contextMenu, view, contextMenuInfo);
+
+        getMenuInflater().inflate(R.menu.grid_item_menu, contextMenu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.delete_image:
+                File f = new File((String)imageAdapter.getItem(info.position));
+                f.delete();
+                refresh();
+                return true;
+            case R.id.mail_image:
+                Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+                emailIntent.setType("application/image");
+                emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[0]);
+                emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, new File((String)imageAdapter.getItem(info.position)).getName());
+                emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, new File((String)imageAdapter.getItem(info.position)).getName() + " sent from SocialPhoto");
+                emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + imageAdapter.getItem(info.position)));
+                startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
 }
