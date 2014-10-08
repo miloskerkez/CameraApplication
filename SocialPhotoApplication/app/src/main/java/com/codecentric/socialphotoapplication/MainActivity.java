@@ -16,7 +16,6 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         GridView gridView = (GridView) findViewById(R.id.gridView);
         try {
             //gridView.setAdapter(new LazyImageAdapter(this, null, "/sdcard/image/"));
