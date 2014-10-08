@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="@string/button_asc"
+        android:id="@+id/button_sort"
+        android:background="#00ffffff"
+        android:textColor="#c8ffffff"
+        android:textSize="40dp"
+        android:textStyle="italic"
+        android:onClick="toggleSorting" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:id="@+id/button_camera"
+        android:background="@drawable/ic_action_camera"
+        android:onClick="startCamera" />
+</LinearLayout>
