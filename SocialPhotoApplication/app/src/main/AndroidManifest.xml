@@ -21,6 +21,10 @@
             android:label="@string/title_activity_camera"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".FullScreenImageActivity"
+            android:label="@string/title_activity_full_screen_image" >
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.CAMERA" />

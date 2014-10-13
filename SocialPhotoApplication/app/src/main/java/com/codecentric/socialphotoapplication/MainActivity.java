@@ -14,14 +14,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
 
 import java.io.File;
 
 
-public class MainActivity extends Activity implements View.OnCreateContextMenuListener {
+public class MainActivity extends Activity implements View.OnCreateContextMenuListener, AdapterView.OnItemClickListener {
 
     GridView gridView;
     ImageAdapter imageAdapter;
+    boolean asc = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +70,8 @@ public class MainActivity extends Activity implements View.OnCreateContextMenuLi
                 imageAdapter = new ImageAdapter(this, true);
                 registerForContextMenu(gridView);
                 try {
-                    //gridView.setAdapter(new LazyImageAdapter(this, null, "/sdcard/image/"));
                     gridView.setAdapter(imageAdapter);
+                    gridView.setOnItemClickListener(this);
                     System.out.println("setAdapter");
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -110,8 +112,14 @@ public class MainActivity extends Activity implements View.OnCreateContextMenuLi
         imageAdapter.toggleSorting();
         gridView.invalidateViews();
         System.out.println("sort");
-        Button btn = (Button) v;
-        btn.setText((btn.getText().equals("Asc"))? "Desc" : "Asc");
+        ImageButton btn = (ImageButton) v;
+        asc = !asc;
+        if (asc) {
+            btn.setImageResource(R.drawable.arrow_down);
+    }
+        else {
+            btn.setImageResource(R.drawable.arrow_up);
+        }
     }
 
     @Override
@@ -143,4 +151,10 @@ public class MainActivity extends Activity implements View.OnCreateContextMenuLi
         }
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        Intent intent = new Intent(this, FullScreenImageActivity.class);
+        intent.putExtra("path", (String) imageAdapter.getItem(i));
+        startActivity(intent);
+    }
 }
