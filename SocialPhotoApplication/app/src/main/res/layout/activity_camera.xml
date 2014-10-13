@@ -16,7 +16,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="117dp"
-        android:layout_gravity="left|bottom">
+        android:layout_gravity="left|bottom"
+        android:background="#20000000">
         <Button
             android:id="@+id/button_capture"
             android:text=""
@@ -56,8 +57,10 @@
         android:layout_height="55dp"
         android:layout_gravity="right"
         android:visibility="visible"
-
+        android:onClick="switchCamera"
         />
+
+
 
 
 

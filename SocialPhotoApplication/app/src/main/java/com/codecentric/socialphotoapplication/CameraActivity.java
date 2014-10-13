@@ -31,6 +31,7 @@ public class CameraActivity extends Activity {
 
     private Camera cam;
     private CameraPreview camPreview;
+    private static int numCam;
 
     private byte[] object;
 
@@ -43,8 +44,12 @@ public class CameraActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
 
+        Intent i = getIntent();
+        int number = i.getIntExtra("camera", Camera.CameraInfo.CAMERA_FACING_BACK);
+        numCam = number;
+        System.out.println(number);
         // Create an instance of Camera
-        cam = getCameraInstance();
+        cam = getCameraInstance(number);
 
         // Create our Preview view and set it as the content of our activity.
         camPreview = new CameraPreview(this, cam);
@@ -81,11 +86,11 @@ public class CameraActivity extends Activity {
         }
     }
 
-    private static Camera getCameraInstance(){
+    private static Camera getCameraInstance(int camID){
         Camera cam = null;
         try{
-            cam = Camera.open();
             //cam = Camera.open();
+            cam = Camera.open(camID);
         }catch(Exception e){
 
         }
@@ -192,20 +197,20 @@ public class CameraActivity extends Activity {
     }
 
 
-    /*public void switchCamera(View v){
+    public void switchCamera(View v){
         Intent intent = new Intent(this, CameraActivity.class);
-        if (cameraNumber == 0){
-            cameraNumber = 1;
-            cam.stopPreview();
-            cam = getCameraInstance(cameraNumber);
-            cam.startPreview();
-
+        if (numCam == Camera.CameraInfo.CAMERA_FACING_BACK) {
+            numCam = Camera.CameraInfo.CAMERA_FACING_FRONT;
+            intent.putExtra("camera", numCam);
             startActivity(intent);
-        }else if (cameraNumber == 1){
-            cameraNumber = 0;
+        }else{
+            numCam = Camera.CameraInfo.CAMERA_FACING_BACK;
+            intent.putExtra("camera", numCam);
             startActivity(intent);
         }
-    }*/
+
+
+    }
 
 
     private void releaseCamera(){
