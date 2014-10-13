@@ -19,8 +19,10 @@
         <activity
             android:name=".CameraActivity"
             android:label="@string/title_activity_camera"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
         </activity>
+
+
     </application>
 
     <uses-permission android:name="android.permission.CAMERA" />
