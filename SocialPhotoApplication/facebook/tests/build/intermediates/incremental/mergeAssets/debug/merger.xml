@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="2" >
+
+    <dataSet config="20.0.0" >
+        <source path="C:\Users\Arnold\Desktop\facebook-android-sdk-master\facebook\tests\build\intermediates\exploded-aar\com.android.support\support-v4\20.0.0\assets" />
+    </dataSet>
+    <dataSet config="unspecified" >
+        <source path="C:\Users\Arnold\Desktop\facebook-android-sdk-master\facebook\tests\build\intermediates\exploded-aar\facebook-android-sdk-master\facebook\unspecified\assets" />
+    </dataSet>
+    <dataSet config="main" >
+        <source path="C:\Users\Arnold\Desktop\facebook-android-sdk-master\facebook\tests\assets" >
+            <file
+                name="DarkScreen.mov"
+                path="C:\Users\Arnold\Desktop\facebook-android-sdk-master\facebook\tests\assets\DarkScreen.mov" />
+        </source>
+    </dataSet>
+    <dataSet config="debug" >
+        <source path="C:\Users\Arnold\Desktop\facebook-android-sdk-master\facebook\tests\src\debug\assets" />
+    </dataSet>
+
+</merger>

@@ -4,4 +4,7 @@
     <item
         android:id="@+id/mail_image"
         android:title="Share by email" />
+    <item
+        android:id="@+id/fb_image"
+        android:title="Post on Facebook" />
 </menu>

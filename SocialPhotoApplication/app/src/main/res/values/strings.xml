@@ -9,5 +9,7 @@
     <string name="no_items">No items to show</string>
     <string name="title_activity_full_screen_image">FullScreenImageActivity</string>
     <string name="hello_world">Hello world!</string>
+    <string name="APP_ID">775561485840771</string>
+    <string name="app_id">775561485840771</string>
 
 </resources>

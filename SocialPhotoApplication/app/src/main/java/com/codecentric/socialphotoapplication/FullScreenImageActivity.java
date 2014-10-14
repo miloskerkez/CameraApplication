@@ -13,12 +13,17 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 
+import com.facebook.Session;
+import com.facebook.UiLifecycleHelper;
+
 import java.io.File;
 
 
 public class FullScreenImageActivity extends Activity implements View.OnCreateContextMenuListener {
 
     String path;
+
+    private UiLifecycleHelper uiHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,27 +35,38 @@ public class FullScreenImageActivity extends Activity implements View.OnCreateCo
 
         path = (String) getIntent().getExtras().get("path");
         ImageView picture = (ImageView) findViewById(R.id.picture);
-        //picture.setImageBitmap(BitmapFactory.decodeFile(path));
 
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(path, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW/1000, photoH/1000);
-
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
-
-        picture.setImageBitmap(BitmapFactory.decodeFile(path, bmOptions));
+        picture.setImageBitmap(Utils.decodeFile(path, 1000));
 
         registerForContextMenu(picture);
+
+        uiHelper = new UiLifecycleHelper(this, Utils.callback);
+        uiHelper.onCreate(savedInstanceState);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        uiHelper.onResume();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        uiHelper.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        uiHelper.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        uiHelper.onDestroy();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -90,9 +106,22 @@ public class FullScreenImageActivity extends Activity implements View.OnCreateCo
                 emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, new File(path).getName() + " sent from SocialPhoto");
                 emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + path));
                 startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+            case R.id.fb_image:
+                loginAndPostOnFacebook(path);
             default:
                 return super.onContextItemSelected(item);
         }
+    }
+
+    private void loginAndPostOnFacebook(final String picPath) {
+        Utils.openFacebookSessionAndPost(picPath, FullScreenImageActivity.this, uiHelper);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode,Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Session.getActiveSession().onActivityResult(FullScreenImageActivity.this, requestCode, resultCode, data);
+        uiHelper.onActivityResult(requestCode, resultCode, data, Utils.dialogCallback);
     }
 
 }

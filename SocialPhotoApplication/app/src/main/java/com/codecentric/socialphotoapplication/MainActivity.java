@@ -3,20 +3,31 @@ package com.codecentric.socialphotoapplication;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
 
+import com.facebook.Request;
+import com.facebook.RequestAsyncTask;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
+import com.facebook.widget.FacebookDialog;
+
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class MainActivity extends Activity implements View.OnCreateContextMenuListener, AdapterView.OnItemClickListener {
@@ -24,6 +35,10 @@ public class MainActivity extends Activity implements View.OnCreateContextMenuLi
     GridView gridView;
     ImageAdapter imageAdapter;
     boolean asc = true;
+    boolean isFetching = false;
+
+    private UiLifecycleHelper uiHelper;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,26 +52,16 @@ public class MainActivity extends Activity implements View.OnCreateContextMenuLi
 
         mActionBar.setCustomView(mCustomView);
         mActionBar.setDisplayShowCustomEnabled(true);
-    }
 
-    private void setContentView() {
-        try {
-            File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_PICTURES), "MyCameraApp");
-            if (mediaStorageDir.listFiles().length > 0) {
-                setContentView(R.layout.main_grid);
-            } else {
-                setContentView(R.layout.text);
-            }
-        }
-        catch (Exception e) {
-            setContentView(R.layout.text);
-        }
+        uiHelper = new UiLifecycleHelper(this, Utils.callback);
+        uiHelper.onCreate(savedInstanceState);
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        uiHelper.onResume();
         refresh();
     }
 
@@ -82,6 +87,24 @@ public class MainActivity extends Activity implements View.OnCreateContextMenuLi
         } catch (Exception e) {
             setContentView(R.layout.text);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        uiHelper.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        uiHelper.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        uiHelper.onDestroy();
     }
 
     @Override
@@ -146,6 +169,8 @@ public class MainActivity extends Activity implements View.OnCreateContextMenuLi
                 emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, new File((String)imageAdapter.getItem(info.position)).getName() + " sent from SocialPhoto");
                 emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + imageAdapter.getItem(info.position)));
                 startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+            case R.id.fb_image:
+                loginAndPostOnFacebook((String)imageAdapter.getItem(info.position));
             default:
                 return super.onContextItemSelected(item);
         }
@@ -157,4 +182,16 @@ public class MainActivity extends Activity implements View.OnCreateContextMenuLi
         intent.putExtra("path", (String) imageAdapter.getItem(i));
         startActivity(intent);
     }
+
+    private void loginAndPostOnFacebook(final String picPath) {
+        Utils.openFacebookSessionAndPost(picPath, this, uiHelper);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode,Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Session.getActiveSession().onActivityResult(MainActivity.this, requestCode, resultCode, data);
+        uiHelper.onActivityResult(requestCode, resultCode, data, Utils.dialogCallback);
+    }
+
 }
