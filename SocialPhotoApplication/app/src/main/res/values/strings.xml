@@ -4,8 +4,6 @@
     <string name="app_name">SocialPhoto</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_camera">CameraActivity</string>
-    <string name="button_asc">Asc</string>
-    <string name="button_desc">Desc</string>
     <string name="no_items">No items to show</string>
     <string name="title_activity_full_screen_image">FullScreenImageActivity</string>
     <string name="hello_world">Hello world!</string>

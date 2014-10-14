@@ -2,6 +2,7 @@ package com.codecentric.socialphotoapplication;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.net.Uri;
@@ -10,8 +11,8 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SurfaceView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 
 import java.io.File;
@@ -26,22 +27,32 @@ public class CameraActivity extends Activity {
 
     private Camera cam;
     private CameraPreview camPreview;
-    private SurfaceView surView;
+    private static int numCam;
+
+    private byte[] object;
+
 
     public static final int MEDIA_TYPE_IMAGE = 1;
-    public static final int MEDIA_TYPE_VIDEO = 2;
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
 
-        cam = getCameraInstance();
+        Intent i = getIntent();
+        int number = i.getIntExtra("camera", Camera.CameraInfo.CAMERA_FACING_BACK);
+        numCam = number;
+        System.out.println(number);
+        // Create an instance of Camera
+        cam = getCameraInstance(number);
 
+        // Create our Preview view and set it as the content of our activity.
         camPreview = new CameraPreview(this, cam);
-        FrameLayout preview = (FrameLayout)findViewById(R.id.camera_preview);
+        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(camPreview);
     }
+
 
 
     @Override
@@ -71,10 +82,11 @@ public class CameraActivity extends Activity {
         }
     }
 
-    private static Camera getCameraInstance(){
+    private static Camera getCameraInstance(int camID){
         Camera cam = null;
         try{
-            cam = Camera.open();
+            //cam = Camera.open();
+            cam = Camera.open(camID);
         }catch(Exception e){
 
         }
@@ -117,47 +129,85 @@ public class CameraActivity extends Activity {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
 
-            File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
-            if (pictureFile == null){
-                //Log.d("Error creating media file, check storage permissions: ");
-                return;
-            }
+            object = data;
 
-            try {
-                FileOutputStream fos = new FileOutputStream(pictureFile);
-                fos.write(data);
-                fos.close();
-            } catch (FileNotFoundException e) {
-                //Log.d(TAG "File not found: " + e.getMessage());
-            } catch (IOException e) {
-               //Log.d(TAG, "Error accessing file: " + e.getMessage());
-            }
+
+
         }
     };
 
 
-   /* public void captureButton(View v){
-    Button captureButton = (Button) findViewById(R.id.button_capture);
-    captureButton.setOnClickListener(
-            new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            // get an image from the camera
-            cam.takePicture(null, null, pic);
-        }
-    }
-    );
-    }*/
+
 
 
     public void capturePicture(View view){
-            //Intent intent = new Intent(this, CameraActivity.class);
-        //intent.putExtra();
+            //Intent intent = new Intent(this, PhotoActivity.class);
+
             cam.takePicture(null, null, pic);
+        Button save = (Button)findViewById(R.id.buttonSave);
+        save.setVisibility(View.VISIBLE);
+        Button cancel = (Button)findViewById(R.id.buttonCancel);
+        cancel.setVisibility(View.VISIBLE);
+        Button capture = (Button)findViewById(R.id.button_capture);
+        capture.setVisibility(View.INVISIBLE);
+        Button change = (Button)findViewById(R.id.swichCamBtn);
+        change.setVisibility(View.INVISIBLE);
+           // intent.putExtra("object", object);
+       // intent.putExtra("file", fileOutputStream);
+        //if (object == null){
+       //     System.out.println("Nema slike");
+        //}else{
+          //  System.out.println("ima slike");
+       // }
+        //intent.putExtra("object", object);
             //startActivity(intent);
 
 
     }
+
+    public void cancelPicture(View v) {
+        Intent intentCancel = new Intent(this, CameraActivity.class);
+        startActivity(intentCancel);
+    }
+
+    public void savePicture(View v) {
+        File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
+
+        if (pictureFile == null){
+            //Log.d("Error creating media file, check storage permissions: ");
+            return;
+        }
+
+        try {
+            FileOutputStream fos = new FileOutputStream(pictureFile);
+            fos.write(object);
+            fos.close();
+
+        } catch (FileNotFoundException e) {
+            //Log.d(TAG "File not found: " + e.getMessage());
+        } catch (IOException e) {
+            //Log.d(TAG, "Error accessing file: " + e.getMessage());
+        }
+        Intent intentSave = new Intent(this, MainActivity.class);
+        startActivity(intentSave);
+    }
+
+
+    public void switchCamera(View v){
+        Intent intent = new Intent(this, CameraActivity.class);
+        if (numCam == Camera.CameraInfo.CAMERA_FACING_BACK) {
+            numCam = Camera.CameraInfo.CAMERA_FACING_FRONT;
+            intent.putExtra("camera", numCam);
+            startActivity(intent);
+        }else{
+            numCam = Camera.CameraInfo.CAMERA_FACING_BACK;
+            intent.putExtra("camera", numCam);
+            startActivity(intent);
+        }
+
+
+    }
+
 
     private void releaseCamera(){
         if (cam != null){

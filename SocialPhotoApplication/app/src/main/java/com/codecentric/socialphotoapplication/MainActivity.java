@@ -3,11 +3,9 @@ package com.codecentric.socialphotoapplication;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,17 +15,10 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageButton;
 
-import com.facebook.Request;
-import com.facebook.RequestAsyncTask;
-import com.facebook.Response;
 import com.facebook.Session;
-import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
-import com.facebook.widget.FacebookDialog;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
 
 
 public class MainActivity extends Activity implements View.OnCreateContextMenuListener, AdapterView.OnItemClickListener {
