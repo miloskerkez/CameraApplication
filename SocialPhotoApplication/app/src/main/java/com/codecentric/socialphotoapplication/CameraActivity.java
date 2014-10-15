@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -30,6 +31,9 @@ public class CameraActivity extends Activity {
     private static int numCam;
 
     private byte[] object;
+    private Uri  picUri;
+    private Uri  picUri2;
+    private String stringPicture;
 
 
     public static final int MEDIA_TYPE_IMAGE = 1;
@@ -39,6 +43,12 @@ public class CameraActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+
+        ImageButton switchCam = (ImageButton)findViewById(R.id.switchCamBtn);
+        int numberOfCameras = Camera.getNumberOfCameras();
+        if (numberOfCameras < 2) {
+            switchCam.setVisibility(View.INVISIBLE);
+        }
 
         Intent i = getIntent();
         int number = i.getIntExtra("camera", Camera.CameraInfo.CAMERA_FACING_BACK);
@@ -130,7 +140,8 @@ public class CameraActivity extends Activity {
         public void onPictureTaken(byte[] data, Camera camera) {
 
             object = data;
-
+            stringPicture = data.toString();
+            picUri = Uri.parse(stringPicture);
 
 
         }
@@ -150,17 +161,9 @@ public class CameraActivity extends Activity {
         cancel.setVisibility(View.VISIBLE);
         Button capture = (Button)findViewById(R.id.button_capture);
         capture.setVisibility(View.INVISIBLE);
-        Button change = (Button)findViewById(R.id.swichCamBtn);
+        ImageButton change = (ImageButton)findViewById(R.id.switchCamBtn);
         change.setVisibility(View.INVISIBLE);
-           // intent.putExtra("object", object);
-       // intent.putExtra("file", fileOutputStream);
-        //if (object == null){
-       //     System.out.println("Nema slike");
-        //}else{
-          //  System.out.println("ima slike");
-       // }
-        //intent.putExtra("object", object);
-            //startActivity(intent);
+
 
 
     }
@@ -222,9 +225,7 @@ public class CameraActivity extends Activity {
         releaseCamera();
     }
 
-    private static Uri getOutputMediaFileUri(int type){
-        return Uri.fromFile(getOutputMediaFile(type));
-    }
+
 
 
 
