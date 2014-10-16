@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- From: file:/F:/AndroidStudioProjects/Git/CameraApplication/SocialPhotoApplication/simple-crop-image-lib/res/values/strings.xml -->
+    <!-- From: file:/C:/Users/codecentric/Desktop/MilosKerkezAndroid/AppGit/LastGit/CameraApplication/SocialPhotoApplication/simple-crop-image-lib/res/values/strings.xml -->
     <eat-comment />
 
     <string name="cancel">Cancel</string>
@@ -10,7 +10,7 @@
     <string name="preparing_card">Preparing card</string>
     <string name="save">Save</string>
     <string name="saving_image">Saving image</string>
-    <!-- From: file:/F:/AndroidStudioProjects/Git/CameraApplication/SocialPhotoApplication/simple-crop-image-lib/res/values/styles.xml -->
+    <!-- From: file:/C:/Users/codecentric/Desktop/MilosKerkezAndroid/AppGit/LastGit/CameraApplication/SocialPhotoApplication/simple-crop-image-lib/res/values/styles.xml -->
     <eat-comment />
 
     <style name="CropButton">
