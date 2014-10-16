@@ -310,16 +310,20 @@ public class CameraActivity extends Activity {
         cam = getCameraInstance(numCam);
 
         Camera.Parameters params = cam.getParameters();
-        params.setFocusMode("continuous-picture");
+        try {
+            params.setFocusMode("continuous-picture");
 
-        if(this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH))
-        {
+            if (this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
 
-            params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
+                params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
+            }
+
+
+            cam.setParameters(params);
         }
-
-
-        cam.setParameters(params);
+        catch (Exception e) {
+            Log.i("CameraActivity", "Failed to set parameters, front camera does not have flash");
+        }
         camPreview = new CameraPreview(this, cam);
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.removeAllViews();

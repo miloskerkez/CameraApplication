@@ -2,6 +2,7 @@ package com.codecentric.socialphotoapplication;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -24,6 +25,7 @@ public class FullScreenImageActivity extends Activity implements View.OnCreateCo
     String path;
 
     private UiLifecycleHelper uiHelper;
+    private ProgressDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,10 @@ public class FullScreenImageActivity extends Activity implements View.OnCreateCo
     public void onPause() {
         super.onPause();
         uiHelper.onPause();
+        if (loadingDialog != null) {
+            loadingDialog.dismiss();
+            loadingDialog = null;
+        }
     }
 
     @Override
@@ -106,9 +112,11 @@ public class FullScreenImageActivity extends Activity implements View.OnCreateCo
                 emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, new File(path).getName() + " sent from SocialPhoto");
                 emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + path));
                 startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+                loadingDialog = loadingDialog.show(FullScreenImageActivity.this, "", "Please wait...");
                 return true;
             case R.id.fb_image:
                 loginAndPostOnFacebook(path);
+                loadingDialog = loadingDialog.show(FullScreenImageActivity.this, "", "Please wait...");
                 return true;
             default:
                 return super.onContextItemSelected(item);

@@ -2,11 +2,14 @@ package com.codecentric.socialphotoapplication;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.ContextMenu;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +31,7 @@ public class MainActivity extends Activity implements View.OnCreateContextMenuLi
     boolean asc = true;
 
     private UiLifecycleHelper uiHelper;
+    private ProgressDialog loadingDialog;
 
 
     @Override
@@ -49,10 +53,16 @@ public class MainActivity extends Activity implements View.OnCreateContextMenuLi
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        refresh();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         uiHelper.onResume();
-        refresh();
+
     }
 
     private void refresh() {
@@ -62,7 +72,14 @@ public class MainActivity extends Activity implements View.OnCreateContextMenuLi
             if (mediaStorageDir.listFiles().length > 0) {
                 setContentView(R.layout.main_grid);
                 gridView = (GridView) findViewById(R.id.gridView);
-                imageAdapter = new ImageAdapter(this, true);
+
+                Display display = getWindowManager().getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size);
+                int width = size.x;
+                int height = size.y;
+
+                imageAdapter = new ImageAdapter(this, true, width / 2 - 10);
                 registerForContextMenu(gridView);
                 try {
                     gridView.setAdapter(imageAdapter);
@@ -88,6 +105,10 @@ public class MainActivity extends Activity implements View.OnCreateContextMenuLi
     public void onPause() {
         super.onPause();
         uiHelper.onPause();
+        if (loadingDialog != null) {
+            loadingDialog.dismiss();
+            loadingDialog = null;
+        }
     }
 
     @Override
@@ -116,6 +137,7 @@ public class MainActivity extends Activity implements View.OnCreateContextMenuLi
     }
 
     public void startCamera(View v) {
+        loadingDialog = loadingDialog.show(MainActivity.this, "", "Please wait...");
         Intent intent = new Intent(this, CameraActivity.class);
         startActivity(intent);
     }
@@ -158,9 +180,11 @@ public class MainActivity extends Activity implements View.OnCreateContextMenuLi
                 emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, new File((String)imageAdapter.getItem(info.position)).getName() + " sent from SocialPhoto");
                 emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + imageAdapter.getItem(info.position)));
                 startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+                loadingDialog = loadingDialog.show(MainActivity.this, "", "Please wait...");
                 return true;
             case R.id.fb_image:
-                loginAndPostOnFacebook((String)imageAdapter.getItem(info.position));
+                loadingDialog = loadingDialog.show(MainActivity.this, "", "Please wait...");
+                loginAndPostOnFacebook((String) imageAdapter.getItem(info.position));
                 return true;
             default:
                 return super.onContextItemSelected(item);
