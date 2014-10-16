@@ -9,6 +9,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by codecentric on 10/7/2014.
@@ -39,6 +41,33 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         try {
             mCamera.setPreviewDisplay(holder);
             mCamera.startPreview();
+            mCamera.setFaceDetectionListener(new Camera.FaceDetectionListener() {
+
+                @Override
+                public void onFaceDetection(Camera.Face[] faces, Camera camera) {
+                    System.out.println(faces.length);
+                    if (faces.length > 0) {
+                        int maxNumFocusAreas = camera.getParameters().getMaxNumFocusAreas();
+                        int maxNumMeteringAreas = camera.getParameters().getMaxNumMeteringAreas();
+
+                        //Set the FocusAreas using the first detected face
+                        List<Camera.Area> focusList = new ArrayList<Camera.Area>();
+                        Camera.Area firstFace = new Camera.Area(faces[0].rect, 1000);
+                        focusList.add(firstFace);
+
+                        if (camera.getParameters().getMaxNumFocusAreas() > 0) {
+                            camera.getParameters().setFocusAreas(focusList);
+                        }
+
+                        if (camera.getParameters().getMaxNumMeteringAreas() > 0) {
+                            camera.getParameters().setMeteringAreas(focusList);
+                        }
+
+                    }
+
+                }
+            });
+            mCamera.startFaceDetection();
         } catch (IOException e) {
             //Log.d(VIEW_LOG_TAG, "Error setting camera preview: " + e.getMessage());
         }
@@ -84,6 +113,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
         mCamera.setDisplayOrientation(mRotation); //set the rotation for preview camera
 
+        List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
+        Camera.Size previewSize = previewSizes.get(4);
+
         mCamera.setParameters(parameters);
 
 
@@ -91,6 +123,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         try {
             mCamera.setPreviewDisplay(mHolder);
             mCamera.startPreview();
+
+
+            mCamera.startFaceDetection();
 
         } catch (Exception e){
             Log.d(VIEW_LOG_TAG, "Error starting camera preview: " + e.getMessage());

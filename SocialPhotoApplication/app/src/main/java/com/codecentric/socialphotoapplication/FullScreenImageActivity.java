@@ -106,8 +106,10 @@ public class FullScreenImageActivity extends Activity implements View.OnCreateCo
                 emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, new File(path).getName() + " sent from SocialPhoto");
                 emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + path));
                 startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+                return true;
             case R.id.fb_image:
                 loginAndPostOnFacebook(path);
+                return true;
             default:
                 return super.onContextItemSelected(item);
         }

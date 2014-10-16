@@ -6,7 +6,8 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme"
+        android:largeHeap="true" >
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
@@ -19,20 +20,29 @@
         <activity
             android:name=".CameraActivity"
             android:label="@string/title_activity_camera"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
-
         <activity
             android:name=".FullScreenImageActivity"
             android:label="@string/title_activity_full_screen_image" >
         </activity>
-        <activity android:name="com.facebook.LoginActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+        <activity
+            android:name="com.facebook.LoginActivity"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name="eu.janmuller.android.simplecropimage.CropImage"
             android:label="@string/app_name" />
-        <provider android:authorities="com.facebook.app.NativeAppCallContentProvider775561485840771"
+
+        <provider
             android:name="com.facebook.NativeAppCallContentProvider"
-            android:exported="true"/>
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/app_id"/>
+            android:authorities="com.facebook.app.NativeAppCallContentProvider775561485840771"
+            android:exported="true" />
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/app_id" />
+
     </application>
 
     <uses-permission android:name="android.permission.CAMERA" />
@@ -42,6 +52,5 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
 
 </manifest>

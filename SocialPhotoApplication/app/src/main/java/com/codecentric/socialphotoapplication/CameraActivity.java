@@ -1,13 +1,19 @@
 package com.codecentric.socialphotoapplication;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +21,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -22,12 +30,15 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import eu.janmuller.android.simplecropimage.CropImage;
+
 
 public class CameraActivity extends Activity {
 
     private Camera cam;
     private CameraPreview camPreview;
     private static int numCam;
+    private File tempFile;
 
     private byte[] object;
 
@@ -40,17 +51,15 @@ public class CameraActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
 
+        ActionBar mActionBar = getActionBar();
+        mActionBar.hide();
+
         Intent i = getIntent();
         int number = i.getIntExtra("camera", Camera.CameraInfo.CAMERA_FACING_BACK);
         numCam = number;
         System.out.println(number);
         // Create an instance of Camera
-        cam = getCameraInstance(number);
 
-        // Create our Preview view and set it as the content of our activity.
-        camPreview = new CameraPreview(this, cam);
-        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-        preview.addView(camPreview);
     }
 
 
@@ -131,7 +140,16 @@ public class CameraActivity extends Activity {
 
             object = data;
 
-
+            Button save = (Button)findViewById(R.id.buttonSave);
+            save.setVisibility(View.VISIBLE);
+            Button crop = (Button)findViewById(R.id.buttonCrop);
+            crop.setVisibility(View.VISIBLE);
+            Button cancel = (Button)findViewById(R.id.buttonCancel);
+            cancel.setVisibility(View.VISIBLE);
+            Button capture = (Button)findViewById(R.id.button_capture);
+            capture.setVisibility(View.INVISIBLE);
+            Button change = (Button)findViewById(R.id.swichCamBtn);
+            change.setVisibility(View.INVISIBLE);
 
         }
     };
@@ -143,15 +161,13 @@ public class CameraActivity extends Activity {
     public void capturePicture(View view){
             //Intent intent = new Intent(this, PhotoActivity.class);
 
-            cam.takePicture(null, null, pic);
-        Button save = (Button)findViewById(R.id.buttonSave);
-        save.setVisibility(View.VISIBLE);
-        Button cancel = (Button)findViewById(R.id.buttonCancel);
-        cancel.setVisibility(View.VISIBLE);
-        Button capture = (Button)findViewById(R.id.button_capture);
-        capture.setVisibility(View.INVISIBLE);
-        Button change = (Button)findViewById(R.id.swichCamBtn);
-        change.setVisibility(View.INVISIBLE);
+        cam.autoFocus(new Camera.AutoFocusCallback() {
+
+            @Override
+            public void onAutoFocus(boolean b, Camera camera) {
+                cam.takePicture(null, null, pic);
+            }
+        });
            // intent.putExtra("object", object);
        // intent.putExtra("file", fileOutputStream);
         //if (object == null){
@@ -165,21 +181,86 @@ public class CameraActivity extends Activity {
 
     }
 
+    private static final int REQUEST_CODE_CROP_IMAGE = 0x3;
+
+    private void runCropImage() {
+
+        System.out.println("CameraActivity says: " + tempFile.getAbsolutePath());
+        System.out.println("Uri:" + Uri.fromFile(new File(tempFile.getAbsolutePath())));
+
+        // create explicit intent
+        Intent intent = new Intent(this, CropImage.class);
+
+        // tell CropImage activity to look for image to crop
+        String filePath = tempFile.getAbsolutePath();
+        intent.putExtra(CropImage.IMAGE_PATH, filePath);
+
+        // allow CropImage activity to rescale image
+        intent.putExtra(CropImage.SCALE, true);
+
+        // if the aspect ratio is fixed to ratio 3/2
+        intent.putExtra(CropImage.ASPECT_X, 3);
+        intent.putExtra(CropImage.ASPECT_Y, 2);
+
+        // start activity CropImage with certain request code and listen
+        // for result
+        startActivityForResult(intent, REQUEST_CODE_CROP_IMAGE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (resultCode != RESULT_OK) {
+
+            return;
+        }
+
+        switch (requestCode) {
+
+            case REQUEST_CODE_CROP_IMAGE:
+
+                String path = data.getStringExtra(CropImage.IMAGE_PATH);
+
+                // if nothing received
+                if (path == null) {
+
+                    return;
+                }
+
+                // cropped bitmap
+                Bitmap bitmap = BitmapFactory.decodeFile(tempFile.getAbsolutePath());
+
+                Intent i = new Intent(CameraActivity.this, FullScreenImageActivity.class);
+                i.putExtra("path", tempFile.getAbsolutePath());
+                startActivity(i);
+
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
     public void cancelPicture(View v) {
         Intent intentCancel = new Intent(this, CameraActivity.class);
         startActivity(intentCancel);
     }
 
-    public void savePicture(View v) {
-        File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
+    public void cropPicture(View v) {
 
-        if (pictureFile == null){
-            //Log.d("Error creating media file, check storage permissions: ");
-            return;
-        }
+        savePicture(v);
+
+        runCropImage();
+
+        /*Intent intentSave = new Intent(this, MainActivity.class);
+        startActivity(intentSave);*/
+    }
+
+    public void savePicture(View v) {
+
+        tempFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
 
         try {
-            FileOutputStream fos = new FileOutputStream(pictureFile);
+            FileOutputStream fos = new FileOutputStream(tempFile);
             fos.write(object);
             fos.close();
 
@@ -188,8 +269,10 @@ public class CameraActivity extends Activity {
         } catch (IOException e) {
             //Log.d(TAG, "Error accessing file: " + e.getMessage());
         }
-        Intent intentSave = new Intent(this, MainActivity.class);
-        startActivity(intentSave);
+
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
+
     }
 
 
@@ -220,6 +303,28 @@ public class CameraActivity extends Activity {
     protected void onPause(){
         super.onPause();
         releaseCamera();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        cam = getCameraInstance(numCam);
+
+        Camera.Parameters params = cam.getParameters();
+        params.setFocusMode("continuous-picture");
+
+        if(this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH))
+        {
+
+            params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
+        }
+
+
+        cam.setParameters(params);
+        camPreview = new CameraPreview(this, cam);
+        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+        preview.removeAllViews();
+        preview.addView(camPreview);
     }
 
     private static Uri getOutputMediaFileUri(int type){

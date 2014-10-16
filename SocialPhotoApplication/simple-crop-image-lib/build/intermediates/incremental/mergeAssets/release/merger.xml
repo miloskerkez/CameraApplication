@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="2" >
+
+    <dataSet config="main" >
+        <source path="F:\AndroidStudioProjects\Git\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\src\main\assets" />
+        <source path="F:\AndroidStudioProjects\Git\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\assets" />
+    </dataSet>
+    <dataSet config="release" >
+        <source path="F:\AndroidStudioProjects\Git\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\src\release\assets" />
+    </dataSet>
+
+</merger>

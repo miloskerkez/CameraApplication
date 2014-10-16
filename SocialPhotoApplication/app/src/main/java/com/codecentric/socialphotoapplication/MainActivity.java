@@ -26,7 +26,6 @@ public class MainActivity extends Activity implements View.OnCreateContextMenuLi
     GridView gridView;
     ImageAdapter imageAdapter;
     boolean asc = true;
-    boolean isFetching = false;
 
     private UiLifecycleHelper uiHelper;
 
@@ -68,7 +67,6 @@ public class MainActivity extends Activity implements View.OnCreateContextMenuLi
                 try {
                     gridView.setAdapter(imageAdapter);
                     gridView.setOnItemClickListener(this);
-                    System.out.println("setAdapter");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -160,8 +158,10 @@ public class MainActivity extends Activity implements View.OnCreateContextMenuLi
                 emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, new File((String)imageAdapter.getItem(info.position)).getName() + " sent from SocialPhoto");
                 emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + imageAdapter.getItem(info.position)));
                 startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+                return true;
             case R.id.fb_image:
                 loginAndPostOnFacebook((String)imageAdapter.getItem(info.position));
+                return true;
             default:
                 return super.onContextItemSelected(item);
         }

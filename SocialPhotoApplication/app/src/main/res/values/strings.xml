@@ -9,5 +9,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="APP_ID">775561485840771</string>
     <string name="app_id">775561485840771</string>
+    <string name="title_activity_crop_image">CropImage</string>
 
 </resources>
