@@ -29,13 +29,14 @@
             android:background="@drawable/ic_action_camera"/>
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="121dp"
+            android:layout_height="70dp"
             android:text="Cancel"
             android:id="@+id/buttonCancel"
             android:layout_gravity="left|center_vertical"
             android:visibility="invisible"
-            android:onClick="cancelPicture"/>
+            android:onClick="cancelPicture"
+            />
 
         <Button
             android:layout_width="wrap_content"
@@ -53,21 +54,21 @@
             android:id="@+id/buttonSave"
             android:layout_gravity="right|center_vertical"
             android:visibility="invisible"
-            android:onClick="savePicture"/>
+            android:onClick="savePicture" />
     </FrameLayout>
-    <Button
-        android:id="@+id/swichCamBtn"
+    <ImageButton
+        android:id="@+id/switchCamBtn"
         android:text=""
         android:textColor="#ffffff"
-        android:background="@drawable/ic_action_camera"
+        android:src="@drawable/ic_switchcamera"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
-        android:layout_width="70dp"
-        android:layout_height="55dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:visibility="visible"
         android:onClick="switchCamera"
-        />
+        android:background="#00ffffff" />
 
 
 
