@@ -2,11 +2,14 @@ package com.codecentric.socialphotoapplication;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Point;
 import android.hardware.Camera;
 import android.util.Log;
+import android.view.Display;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.FrameLayout;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -76,6 +79,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     public void surfaceDestroyed(SurfaceHolder holder) {
         // empty. Take care of releasing the Camera preview in your activity.
+
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
@@ -110,6 +114,17 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
 
         parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
+
+/*        Display display = ((Activity) mContext).getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int height = size.y;
+
+        int mw = width;
+        int mh = (int) (((double) w) / (((double)mPreviewSize.width) / mPreviewSize.height));
+
+        setLayoutParams(new FrameLayout.LayoutParams(mw, mh));*/
 
         parameters.setRotation(mRotation);
         System.out.println(mRotation);

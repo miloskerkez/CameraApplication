@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import eu.janmuller.android.simplecropimage.CropImage;
 
@@ -112,7 +113,7 @@ public class CameraActivity extends Activity {
             //cam = Camera.open();
             cam = Camera.open(camID);
         } catch (Exception e) {
-
+             e.printStackTrace();
         }
         return cam;
     }
@@ -314,15 +315,17 @@ public class CameraActivity extends Activity {
 
         Intent i = getIntent();
         numCam = i.getIntExtra("camera", Camera.CameraInfo.CAMERA_FACING_BACK);
-        //numCam = number;
         flashLight = i.getBooleanExtra("flashLight", false);
 
-        Camera.Parameters params = cam.getParameters();
-      /*  List<String> focusModes = params.getSupportedFocusModes();
+        try {
+            Camera.Parameters params = cam.getParameters();
+      /*   List<String> focusModes = params.getSupportedFocusModes();
         for (String s: focusModes){
             System.out.println("*************" +s);
         }*/
-        params.setFocusMode("auto");
+
+            params.setFocusMode("auto");
+
 
         /*if(this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH))
         {
@@ -331,7 +334,10 @@ public class CameraActivity extends Activity {
         }*/
 
 
-        cam.setParameters(params);
+            cam.setParameters(params);
+        }catch (Exception e){
+            Log.i("Camera", "Focus mode \"auto\" not supported");
+        }
         camPreview = new CameraPreview(this, cam);
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.removeAllViews();
