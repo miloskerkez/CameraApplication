@@ -108,12 +108,21 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
         Camera.Parameters parameters = mCamera.getParameters();
 
+
         parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
 
         parameters.setRotation(mRotation);
         System.out.println(mRotation);
 
         mCamera.setDisplayOrientation(mRotation); //set the rotation for preview camera
+
+        List<Camera.Size> supportedPicSizes = mCamera.getParameters().getSupportedPictureSizes();
+        parameters.setPictureSize(supportedPicSizes.get(0).width, supportedPicSizes.get(0).height);
+
+       /* System.out.println(mPreviewSize.width+"/"+ mPreviewSize.height);
+        for (Camera.Size s : mSupportedPreviewSizes){
+            System.out.println("!!!!!!!!!!!!!!!!!!" +s.width + "/" + s.height);
+        }*/
 
         /*List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
         Camera.Size previewSize = previewSizes.get(4);*/
@@ -170,7 +179,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     }
 
-    private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h) {
+    /*private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h) {
         final double ASPECT_TOLERANCE = 0.1;
         double targetRatio=(double)h / w;
 
@@ -201,8 +210,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
         return optimalSize;
     }
-
-    @Override
+*/
+/*    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         mSupportedPreviewSizes = mCamera.getParameters().getSupportedPreviewSizes();
         final int width = resolveSize(getSuggestedMinimumWidth(), widthMeasureSpec);
@@ -212,6 +221,55 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         if (mSupportedPreviewSizes != null) {
             mPreviewSize = getOptimalPreviewSize(mSupportedPreviewSizes, width, height);
         }
+    }*/
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        // We purposely disregard child measurements because act as a
+        // wrapper to a SurfaceView that centers the camera preview instead
+        // of stretching it.
+
+        mSupportedPreviewSizes = mCamera.getParameters().getSupportedPreviewSizes();
+        final int width = resolveSize(getSuggestedMinimumWidth(), widthMeasureSpec);
+        final int height = resolveSize(getSuggestedMinimumHeight(), heightMeasureSpec);
+        setMeasuredDimension(width, height);
+
+        if (mSupportedPreviewSizes != null) {
+            mPreviewSize = getOptimalPreviewSize(mSupportedPreviewSizes, width, height);
+        }
+    }
+
+    private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h) {
+        final double ASPECT_TOLERANCE = 0.1;
+        double targetRatio = (double) w / h;
+        if (sizes == null) return null;
+
+        Camera.Size optimalSize = null;
+        double minDiff = Double.MAX_VALUE;
+
+        int targetHeight = h;
+
+        // Try to find an size match aspect ratio and size
+        for (Camera.Size size : sizes) {
+            double ratio = (double) size.width / size.height;
+            if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE) continue;
+            if (Math.abs(size.height - targetHeight) < minDiff) {
+                optimalSize = size;
+                minDiff = Math.abs(size.height - targetHeight);
+            }
+        }
+
+        // Cannot find the one match the aspect ratio, ignore the requirement
+        if (optimalSize == null) {
+            minDiff = Double.MAX_VALUE;
+            for (Camera.Size size : sizes) {
+                if (Math.abs(size.height - targetHeight) < minDiff) {
+                    optimalSize = size;
+                    minDiff = Math.abs(size.height - targetHeight);
+                }
+            }
+        }
+        return optimalSize;
     }
 
 }

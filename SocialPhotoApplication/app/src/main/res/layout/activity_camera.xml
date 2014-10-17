@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
+
     </FrameLayout>
     <FrameLayout
         android:layout_width="match_parent"
@@ -75,7 +76,18 @@
         android:onClick="switchCamera"
         android:background="#00ffffff" />
 
-
+    <ImageButton
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="25dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="flash"
+        android:id="@+id/flashBTN"
+        android:layout_gravity="left|top"
+        android:src="@drawable/ic_flash"
+        android:background="#00ffffff"
+        android:visibility="visible"
+        />
 
 
 

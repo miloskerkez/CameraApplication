@@ -30,6 +30,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import eu.janmuller.android.simplecropimage.CropImage;
 
@@ -41,10 +42,11 @@ public class CameraActivity extends Activity {
     private static int numCam;
     private File tempFile;
 
-    private byte[] object;
+    private byte[] pictureInByteArray;
     private Uri  picUri;
     private Uri  picUri2;
     private String stringPicture;
+    private boolean flashLight = false;
 
 
     public static final int MEDIA_TYPE_IMAGE = 1;
@@ -64,10 +66,18 @@ public class CameraActivity extends Activity {
             switchCam.setVisibility(View.INVISIBLE);
         }
 
-        Intent i = getIntent();
+        ImageButton flashButton = (ImageButton)findViewById(R.id.flashBTN);
+        flashButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flashOnOff();
+            }
+        });
+
+       /* Intent i = getIntent();
         int number = i.getIntExtra("camera", Camera.CameraInfo.CAMERA_FACING_BACK);
-        numCam = number;
-        System.out.println(number);
+        numCam = number;*/
+        //System.out.println(number);
         // Create an instance of Camera
 
     }
@@ -148,7 +158,7 @@ public class CameraActivity extends Activity {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
 
-            object = data;
+            pictureInByteArray = data;
 
             Button save = (Button)findViewById(R.id.buttonSave);
             save.setVisibility(View.VISIBLE);
@@ -160,6 +170,8 @@ public class CameraActivity extends Activity {
             capture.setVisibility(View.INVISIBLE);
             ImageButton change = (ImageButton)findViewById(R.id.switchCamBtn);
             change.setVisibility(View.INVISIBLE);
+            ImageButton flash = (ImageButton)findViewById(R.id.flashBTN);
+            flash.setVisibility(View.INVISIBLE);
 
         }
     };
@@ -169,6 +181,17 @@ public class CameraActivity extends Activity {
 
 
     public void capturePicture(View view){
+       Camera.Parameters params = cam.getParameters();
+        if(this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH))
+        {
+            if (flashLight) {
+                params.setFlashMode(Camera.Parameters.FLASH_MODE_ON);
+            }else{
+                params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+            }
+        }
+        cam.setParameters(params);
+
         cam.autoFocus(new Camera.AutoFocusCallback() {
 
             @Override
@@ -241,6 +264,7 @@ public class CameraActivity extends Activity {
 
     public void cancelPicture(View v) {
         Intent intentCancel = new Intent(this, CameraActivity.class);
+        intentCancel.putExtra("flashLight", flashLight);
         startActivity(intentCancel);
     }
 
@@ -260,7 +284,7 @@ public class CameraActivity extends Activity {
 
         try {
             FileOutputStream fos = new FileOutputStream(tempFile);
-            fos.write(object);
+            fos.write(pictureInByteArray);
             fos.close();
 
         } catch (FileNotFoundException e) {
@@ -280,10 +304,12 @@ public class CameraActivity extends Activity {
         if (numCam == Camera.CameraInfo.CAMERA_FACING_BACK) {
             numCam = Camera.CameraInfo.CAMERA_FACING_FRONT;
             intent.putExtra("camera", numCam);
+            intent.putExtra("flashLight", flashLight);
             startActivity(intent);
         }else{
             numCam = Camera.CameraInfo.CAMERA_FACING_BACK;
             intent.putExtra("camera", numCam);
+            intent.putExtra("flashLight", flashLight);
             startActivity(intent);
         }
 
@@ -309,14 +335,23 @@ public class CameraActivity extends Activity {
         super.onResume();
         cam = getCameraInstance(numCam);
 
-        Camera.Parameters params = cam.getParameters();
-        params.setFocusMode("continuous-picture");
+        Intent i = getIntent();
+        numCam = i.getIntExtra("camera", Camera.CameraInfo.CAMERA_FACING_BACK);
+        //numCam = number;
+        flashLight = i.getBooleanExtra("flashLight", false);
 
-        if(this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH))
+        Camera.Parameters params = cam.getParameters();
+      /*  List<String> focusModes = params.getSupportedFocusModes();
+        for (String s: focusModes){
+            System.out.println("*************" +s);
+        }*/
+        params.setFocusMode("auto");
+
+        /*if(this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH))
         {
 
             params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
-        }
+        }*/
 
 
         cam.setParameters(params);
@@ -324,6 +359,14 @@ public class CameraActivity extends Activity {
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.removeAllViews();
         preview.addView(camPreview);
+    }
+
+    private void flashOnOff(){
+        if (!flashLight){
+            flashLight = true;
+        }else{
+            flashLight = false;
+        }
     }
 
     private static Uri getOutputMediaFileUri(int type){
