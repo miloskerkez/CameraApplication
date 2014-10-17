@@ -2,9 +2,11 @@ package com.codecentric.socialphotoapplication;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -99,16 +101,10 @@ public class FullScreenImageActivity extends Activity implements View.OnCreateCo
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.mail_image:
-                Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-                emailIntent.setType("application/image");
-                emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[0]);
-                emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, new File(path).getName());
-                emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, new File(path).getName() + " sent from SocialPhoto");
-                emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + path));
-                startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+                new MailTask().execute(info);
                 return true;
             case R.id.fb_image:
-                loginAndPostOnFacebook(path);
+                new FacebookTask().execute();
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -124,6 +120,57 @@ public class FullScreenImageActivity extends Activity implements View.OnCreateCo
         super.onActivityResult(requestCode, resultCode, data);
         Session.getActiveSession().onActivityResult(FullScreenImageActivity.this, requestCode, resultCode, data);
         uiHelper.onActivityResult(requestCode, resultCode, data, Utils.dialogCallback);
+    }
+
+    private class MailTask extends AsyncTask<AdapterView.AdapterContextMenuInfo, Void, Integer> {
+        private ProgressDialog Dialog = new ProgressDialog(FullScreenImageActivity.this);
+
+        @Override
+        protected Integer doInBackground(AdapterView.AdapterContextMenuInfo... params) {
+            AdapterView.AdapterContextMenuInfo info = params[0];
+            Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+            emailIntent.setType("application/image");
+            emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[0]);
+            emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, new File(path).getName());
+            emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, new File(path).getName() + " sent from SocialPhoto");
+            emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + path));
+            startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            Dialog.setMessage("Please wait...");
+            Dialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(Integer result)
+        {
+            Dialog.dismiss();
+        }
+    }
+
+    private class FacebookTask extends AsyncTask<Void, Void, Integer> {
+        private ProgressDialog Dialog = new ProgressDialog(FullScreenImageActivity.this);
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            loginAndPostOnFacebook(path);
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            Dialog.setMessage("Please wait...");
+            Dialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(Integer result)
+        {
+            Dialog.dismiss();
+        }
     }
 
 }

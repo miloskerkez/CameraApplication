@@ -126,6 +126,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
         setLayoutParams(new FrameLayout.LayoutParams(mw, mh));*/
 
+
+
         parameters.setRotation(mRotation);
         System.out.println(mRotation);
 

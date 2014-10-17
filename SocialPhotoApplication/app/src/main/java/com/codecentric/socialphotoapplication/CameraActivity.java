@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.hardware.Camera;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,6 +27,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -286,6 +289,54 @@ public class CameraActivity extends Activity {
         } catch (IOException e) {
             Log.d(TAG, "Error accessing file: " + e.getMessage());
         }
+
+      /*  ExifInterface exif;
+        try {
+            exif = new ExifInterface(tempFile.getAbsolutePath());
+            String rot = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
+            System.out.println("!!!!!!!!!!!!!!" +rot);
+            if (Integer.parseInt(rot) == ExifInterface.ORIENTATION_ROTATE_90){
+
+                System.out.println("Delete file: " + tempFile.delete());
+                tempFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
+
+                pictureInByteArray = rotateImage(270, pictureInByteArray);
+                FileOutputStream fos = new FileOutputStream(tempFile, false);
+                fos.write(pictureInByteArray);
+                fos.close();
+             }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+
+    }
+
+    private byte[] rotateImage(int angle, byte[] data) {
+
+        Bitmap bitmapSrc;
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+
+        Camera.CameraInfo info = new Camera.CameraInfo();
+        options.inSampleSize = 4;
+
+        bitmapSrc = BitmapFactory.decodeByteArray(data, 0, data.length, options);
+
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        Bitmap rotated =  Bitmap.createBitmap(bitmapSrc, 0, 0,
+                bitmapSrc.getWidth(), bitmapSrc.getHeight(), matrix, true);
+
+        int bytes = bitmapSrc.getByteCount();
+
+        ByteBuffer buffer = ByteBuffer.allocate(bytes); //Create a new buffer
+        bitmapSrc.copyPixelsToBuffer(buffer); //Move the byte data to the buffer
+
+        byte[] array = buffer.array();
+
+        return array;
     }
 
 
@@ -327,11 +378,11 @@ public class CameraActivity extends Activity {
             params.setFocusMode("auto");
 
 
-        /*if(this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH))
-        {
+            /*if(this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH))
+            {
 
-            params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
-        }*/
+                params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
+            }*/
 
 
             cam.setParameters(params);
@@ -387,18 +438,7 @@ public class CameraActivity extends Activity {
 
         @Override
         protected Integer doInBackground(Void... params) {
-           tempFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
-
-            try {
-                FileOutputStream fos = new FileOutputStream(tempFile);
-                fos.write(pictureInByteArray);
-                fos.close();
-
-            } catch (FileNotFoundException e) {
-                Log.d(TAG, "File not found: " + e.getMessage());
-            } catch (IOException e) {
-                Log.d(TAG, "Error accessing file: " + e.getMessage());
-            }
+          savePictureForCropping();
 
             Intent i = new Intent(CameraActivity.this, MainActivity.class);
             startActivity(i);

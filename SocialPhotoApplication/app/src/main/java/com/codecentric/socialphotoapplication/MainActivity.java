@@ -4,11 +4,13 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.ContextMenu;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -51,10 +53,16 @@ public class MainActivity extends Activity implements View.OnCreateContextMenuLi
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        refresh();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         uiHelper.onResume();
-        refresh();
+
     }
 
     private void refresh() {
@@ -64,7 +72,14 @@ public class MainActivity extends Activity implements View.OnCreateContextMenuLi
             if (mediaStorageDir.listFiles().length > 0) {
                 setContentView(R.layout.main_grid);
                 gridView = (GridView) findViewById(R.id.gridView);
-                imageAdapter = new ImageAdapter(this, true);
+
+                Display display = getWindowManager().getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size);
+                int width = size.x;
+                int height = size.y;
+
+                imageAdapter = new ImageAdapter(this, true, width / 2 - 10);
                 registerForContextMenu(gridView);
                 try {
                     gridView.setAdapter(imageAdapter);
@@ -154,16 +169,10 @@ public class MainActivity extends Activity implements View.OnCreateContextMenuLi
                 refresh();
                 return true;
             case R.id.mail_image:
-                Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-                emailIntent.setType("application/image");
-                emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[0]);
-                emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, new File((String)imageAdapter.getItem(info.position)).getName());
-                emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, new File((String)imageAdapter.getItem(info.position)).getName() + " sent from SocialPhoto");
-                emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + imageAdapter.getItem(info.position)));
-                startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+                new MailTask().execute(info);
                 return true;
             case R.id.fb_image:
-                loginAndPostOnFacebook((String)imageAdapter.getItem(info.position));
+                new FacebookTask().execute(info);
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -211,4 +220,57 @@ public class MainActivity extends Activity implements View.OnCreateContextMenuLi
             Dialog.dismiss();
         }
     }
+
+    private class MailTask extends AsyncTask<AdapterView.AdapterContextMenuInfo, Void, Integer> {
+        private ProgressDialog Dialog = new ProgressDialog(MainActivity.this);
+
+        @Override
+        protected Integer doInBackground(AdapterView.AdapterContextMenuInfo... params) {
+            AdapterView.AdapterContextMenuInfo info = params[0];
+            Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+            emailIntent.setType("application/image");
+            emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[0]);
+            emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, new File((String)imageAdapter.getItem(info.position)).getName());
+            emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, new File((String)imageAdapter.getItem(info.position)).getName() + " sent from SocialPhoto");
+            emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + imageAdapter.getItem(info.position)));
+            startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            Dialog.setMessage("Please wait...");
+            Dialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(Integer result)
+        {
+            Dialog.dismiss();
+        }
+    }
+
+    private class FacebookTask extends AsyncTask<AdapterView.AdapterContextMenuInfo, Void, Integer> {
+        private ProgressDialog Dialog = new ProgressDialog(MainActivity.this);
+
+        @Override
+        protected Integer doInBackground(AdapterView.AdapterContextMenuInfo... params) {
+            AdapterView.AdapterContextMenuInfo info = params[0];
+            loginAndPostOnFacebook((String) imageAdapter.getItem(info.position));
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            Dialog.setMessage("Please wait...");
+            Dialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(Integer result)
+        {
+            Dialog.dismiss();
+        }
+    }
+
 }

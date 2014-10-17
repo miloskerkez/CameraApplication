@@ -9,8 +9,11 @@ import android.os.Environment;
 import android.util.LruCache;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -21,16 +24,38 @@ import java.lang.ref.WeakReference;
 public class ImageAdapter extends BaseAdapter
 {
 
+    private final int size;
     File mediaStorageDir;
     private boolean asc;
     private Context context;
     private LruCache<String, Bitmap> memoryCache;
 
 
-    public ImageAdapter(Context context, boolean asc)
+
+    /*private class GridComponent extends View {
+
+        ViewGroup.LayoutParams layPam;
+        ImageView v;
+
+        public GridComponent(Context context) {
+            super(context);
+            v = new ImageView(context);
+        }
+
+        public void setImageBitmap(Bitmap bm) {
+            v.setImageBitmap(bm);
+            setLayoutParams(new ViewGroup.LayoutParams(bm.getWidth(), bm.getHeight()));
+        }
+
+
+
+    }*/
+
+    public ImageAdapter(Context context, boolean asc, int size)
     {
             this.asc = asc;
             this.context = context;
+            this.size = size;
             //It have to be matched with the directory in SDCard
             mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES), "MyCameraApp");
@@ -86,10 +111,9 @@ public class ImageAdapter extends BaseAdapter
     @Override
     public View getView(int i, View view, ViewGroup viewGroup)
     {
-        final ImageView picture = ((view == null)? new ImageView(viewGroup.getContext()) : (ImageView) view);
-
-        picture.setPadding(1,1,1,1);
-
+        //final GridComponent picture = ((view == null)? new GridComponent(viewGroup.getContext()) : (GridComponent) view);
+        final ImageView picture = ((view == null)? new ImageView(viewGroup.getContext()): (ImageView) view);
+        
         //picture.setImageResource(R.drawable.ic_pic);
 
         final String path = (String) getItem(i);
@@ -100,6 +124,7 @@ public class ImageAdapter extends BaseAdapter
                 ((Activity) context).runOnUiThread(new Runnable() {
                     public void run() {
                         picture.setImageBitmap(bmp);
+                        picture.setLayoutParams(new AbsListView.LayoutParams(size, size));
                     }
                 });
             }
