@@ -37,12 +37,10 @@ public class CameraActivity extends Activity {
     private CameraPreview camPreview;
     private static int numCam;
     private File tempFile;
-
     private byte[] pictureInByteArray;
-       private boolean flashLight = false;
-
-
+    private boolean flashLight = false;
     public static final int MEDIA_TYPE_IMAGE = 1;
+    public static final String TAG = "CAMERA ACTIVITY";
 
 
     @Override
@@ -204,7 +202,7 @@ public class CameraActivity extends Activity {
         System.out.println("Uri:" + Uri.fromFile(new File(tempFile.getAbsolutePath())));
 
         // create explicit intent
-        Intent intent = new Intent(this, CropImage.class);
+        Intent intent = new Intent(CameraActivity.this, CropImage.class);
 
         // tell CropImage activity to look for image to crop
         String filePath = tempFile.getAbsolutePath();
@@ -262,7 +260,7 @@ public class CameraActivity extends Activity {
 
     public void cropPicture(View v) {
 
-        savePicture(v);
+        savePictureForCropping();
 
         runCropImage();
 
@@ -271,7 +269,22 @@ public class CameraActivity extends Activity {
     }
 
     public void savePicture(View v) {
-        new SavingPicture().execute();
+       new SavingPicture().execute();
+     }
+
+    public void savePictureForCropping(){
+        tempFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
+
+        try {
+            FileOutputStream fos = new FileOutputStream(tempFile);
+            fos.write(pictureInByteArray);
+            fos.close();
+
+        } catch (FileNotFoundException e) {
+            Log.d(TAG, "File not found: " + e.getMessage());
+        } catch (IOException e) {
+            Log.d(TAG, "Error accessing file: " + e.getMessage());
+        }
     }
 
 
@@ -334,9 +347,9 @@ public class CameraActivity extends Activity {
     }
 
 
-/*   private static Uri getOutputMediaFileUri(int type) {
+   private static Uri getOutputMediaFileUri(int type) {
         return Uri.fromFile(getOutputMediaFile(type));
-    }*/
+    }
 
 
     private class ReturnToCamera extends AsyncTask<Void, Void, Integer> {
@@ -368,7 +381,7 @@ public class CameraActivity extends Activity {
 
         @Override
         protected Integer doInBackground(Void... params) {
-            tempFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
+           tempFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
 
             try {
                 FileOutputStream fos = new FileOutputStream(tempFile);
@@ -376,9 +389,9 @@ public class CameraActivity extends Activity {
                 fos.close();
 
             } catch (FileNotFoundException e) {
-                //Log.d(TAG "File not found: " + e.getMessage());
+                Log.d(TAG, "File not found: " + e.getMessage());
             } catch (IOException e) {
-                //Log.d(TAG, "Error accessing file: " + e.getMessage());
+                Log.d(TAG, "Error accessing file: " + e.getMessage());
             }
 
             Intent i = new Intent(CameraActivity.this, MainActivity.class);
