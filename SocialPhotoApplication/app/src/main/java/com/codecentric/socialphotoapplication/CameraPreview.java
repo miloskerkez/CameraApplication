@@ -133,8 +133,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
         mCamera.setDisplayOrientation(mRotation); //set the rotation for preview camera
 
-        List<Camera.Size> supportedPicSizes = mCamera.getParameters().getSupportedPictureSizes();
-        parameters.setPictureSize(supportedPicSizes.get(0).width, supportedPicSizes.get(0).height);
+        //List<Camera.Size> supportedPicSizes = mCamera.getParameters().getSupportedPictureSizes();
+        //parameters.setPictureSize(supportedPicSizes.get(0).width, supportedPicSizes.get(0).height);
 
        /* System.out.println(mPreviewSize.width+"/"+ mPreviewSize.height);
         for (Camera.Size s : mSupportedPreviewSizes){
