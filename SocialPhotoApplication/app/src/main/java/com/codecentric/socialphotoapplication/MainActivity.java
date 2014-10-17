@@ -2,8 +2,10 @@ package com.codecentric.socialphotoapplication;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.ContextMenu;
@@ -116,9 +118,10 @@ public class MainActivity extends Activity implements View.OnCreateContextMenuLi
     }
 
     public void startCamera(View v) {
-        Intent intent = new Intent(this, CameraActivity.class);
-        startActivity(intent);
+           new CameraOpenTask().execute();
     }
+
+
 
     public void toggleSorting(View v) {
         imageAdapter.toggleSorting();
@@ -185,4 +188,27 @@ public class MainActivity extends Activity implements View.OnCreateContextMenuLi
         uiHelper.onActivityResult(requestCode, resultCode, data, Utils.dialogCallback);
     }
 
+
+    private class CameraOpenTask extends AsyncTask<Void, Void, Integer> {
+        private ProgressDialog Dialog = new ProgressDialog(MainActivity.this);
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+            startActivity(intent);
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            Dialog.setMessage("Starting camera...");
+            Dialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(Integer result)
+        {
+            Dialog.dismiss();
+        }
+    }
 }
