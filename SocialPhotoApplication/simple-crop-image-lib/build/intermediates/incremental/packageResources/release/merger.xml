@@ -2,76 +2,76 @@
 <merger version="2" >
 
     <dataSet config="main" >
-        <source path="C:\Users\codecentric\Desktop\MilosKerkezAndroid\AppGit\LastGit\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\src\main\res" />
-        <source path="C:\Users\codecentric\Desktop\MilosKerkezAndroid\AppGit\LastGit\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res" >
+        <source path="F:\AndroidStudioProjects\Git\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\src\main\res" />
+        <source path="F:\AndroidStudioProjects\Git\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res" >
             <file
                 name="selector_crop_button"
-                path="C:\Users\codecentric\Desktop\MilosKerkezAndroid\AppGit\LastGit\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\drawable\selector_crop_button.xml"
+                path="F:\AndroidStudioProjects\Git\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\drawable\selector_crop_button.xml"
                 qualifiers=""
                 type="drawable" />
             <file
                 name="btn_crop_operator"
-                path="C:\Users\codecentric\Desktop\MilosKerkezAndroid\AppGit\LastGit\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\drawable-xhdpi\btn_crop_operator.9.png"
+                path="F:\AndroidStudioProjects\Git\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\drawable-xhdpi\btn_crop_operator.9.png"
                 qualifiers="xhdpi-v4"
                 type="drawable" />
             <file
                 name="btn_crop_pressed"
-                path="C:\Users\codecentric\Desktop\MilosKerkezAndroid\AppGit\LastGit\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\drawable-xhdpi\btn_crop_pressed.9.png"
+                path="F:\AndroidStudioProjects\Git\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\drawable-xhdpi\btn_crop_pressed.9.png"
                 qualifiers="xhdpi-v4"
                 type="drawable" />
             <file
                 name="camera_crop_height"
-                path="C:\Users\codecentric\Desktop\MilosKerkezAndroid\AppGit\LastGit\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\drawable-xhdpi\camera_crop_height.png"
+                path="F:\AndroidStudioProjects\Git\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\drawable-xhdpi\camera_crop_height.png"
                 qualifiers="xhdpi-v4"
                 type="drawable" />
             <file
                 name="camera_crop_width"
-                path="C:\Users\codecentric\Desktop\MilosKerkezAndroid\AppGit\LastGit\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\drawable-xhdpi\camera_crop_width.png"
+                path="F:\AndroidStudioProjects\Git\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\drawable-xhdpi\camera_crop_width.png"
                 qualifiers="xhdpi-v4"
                 type="drawable" />
             <file
                 name="ic_rotate_left"
-                path="C:\Users\codecentric\Desktop\MilosKerkezAndroid\AppGit\LastGit\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\drawable-xhdpi\ic_rotate_left.png"
+                path="F:\AndroidStudioProjects\Git\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\drawable-xhdpi\ic_rotate_left.png"
                 qualifiers="xhdpi-v4"
                 type="drawable" />
             <file
                 name="ic_rotate_right"
-                path="C:\Users\codecentric\Desktop\MilosKerkezAndroid\AppGit\LastGit\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\drawable-xhdpi\ic_rotate_right.png"
+                path="F:\AndroidStudioProjects\Git\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\drawable-xhdpi\ic_rotate_right.png"
                 qualifiers="xhdpi-v4"
                 type="drawable" />
             <file
                 name="indicator_autocrop"
-                path="C:\Users\codecentric\Desktop\MilosKerkezAndroid\AppGit\LastGit\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\drawable-xhdpi\indicator_autocrop.png"
+                path="F:\AndroidStudioProjects\Git\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\drawable-xhdpi\indicator_autocrop.png"
                 qualifiers="xhdpi-v4"
                 type="drawable" />
             <file
                 name="cropimage"
-                path="C:\Users\codecentric\Desktop\MilosKerkezAndroid\AppGit\LastGit\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\layout\cropimage.xml"
+                path="F:\AndroidStudioProjects\Git\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\layout\cropimage.xml"
                 qualifiers=""
                 type="layout" />
             <file
                 name="main"
-                path="C:\Users\codecentric\Desktop\MilosKerkezAndroid\AppGit\LastGit\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\layout\main.xml"
+                path="F:\AndroidStudioProjects\Git\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\layout\main.xml"
                 qualifiers=""
                 type="layout" />
             <file
-                path="C:\Users\codecentric\Desktop\MilosKerkezAndroid\AppGit\LastGit\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\values\strings.xml"
+                path="F:\AndroidStudioProjects\Git\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\values\strings.xml"
                 qualifiers="" >
-                <string name="not_enough_space" >Not enough space
-                </string>
-                <string name="preparing_card" >Preparing card
-                </string>
-                <string name="no_storage_card" >No storage card
-                </string>
                 <string name="cancel" >Cancel
                 </string>
                 <string name="save" >Save
+                </string>
+                <string name="no_storage_card" >No storage card
+                </string>
+                <string name="not_enough_space" >Not enough space
+                </string>
+                <string name="preparing_card" >Preparing card
                 </string>
                 <string name="saving_image" >Saving image
                 </string>
             </file>
             <file
-                path="C:\Users\codecentric\Desktop\MilosKerkezAndroid\AppGit\LastGit\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\values\styles.xml"
+                path="F:\AndroidStudioProjects\Git\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\values\styles.xml"
                 qualifiers="" >
 
                 <style name="CropButton" >
@@ -102,27 +102,27 @@
                 </style>
             </file>
             <file
-                path="C:\Users\codecentric\Desktop\MilosKerkezAndroid\AppGit\LastGit\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\values-cs\strings.xml"
+                path="F:\AndroidStudioProjects\Git\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\res\values-cs\strings.xml"
                 qualifiers="cs" >
                 <string name="preparing_card" >Připravuji kartu
                 </string>
-                <string name="no_storage_card" >Žádná SD karta
-                </string>
-                <string name="save" >Uložit
-                </string>
                 <string name="saving_image" >Ukládám obrázek
-                </string>
-                <string name="not_enough_space" >Na SD kartě není dostatek místa
                 </string>
                 <string name="cancel" >Zrušit
                 </string>
+                <string name="save" >Uložit
+                </string>
+                <string name="no_storage_card" >Žádná SD karta
+                </string>
+                <string name="not_enough_space" >Na SD kartě není dostatek místa
+                </string>
             </file>
         </source>
-        <source path="C:\Users\codecentric\Desktop\MilosKerkezAndroid\AppGit\LastGit\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\build\generated\res\rs\release" />
-        <source path="C:\Users\codecentric\Desktop\MilosKerkezAndroid\AppGit\LastGit\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\build\generated\res\generated\release" />
+        <source path="F:\AndroidStudioProjects\Git\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\build\generated\res\rs\release" />
+        <source path="F:\AndroidStudioProjects\Git\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\build\generated\res\generated\release" />
     </dataSet>
     <dataSet config="release" >
-        <source path="C:\Users\codecentric\Desktop\MilosKerkezAndroid\AppGit\LastGit\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\src\release\res" />
+        <source path="F:\AndroidStudioProjects\Git\CameraApplication\SocialPhotoApplication\simple-crop-image-lib\src\release\res" />
     </dataSet>
 
 </merger>

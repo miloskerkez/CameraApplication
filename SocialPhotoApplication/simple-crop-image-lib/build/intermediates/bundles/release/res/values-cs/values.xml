@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- From: file:/C:/Users/codecentric/Desktop/MilosKerkezAndroid/AppGit/LastGit/CameraApplication/SocialPhotoApplication/simple-crop-image-lib/res/values-cs/strings.xml -->
+    <!-- From: file:/F:/AndroidStudioProjects/Git/CameraApplication/SocialPhotoApplication/simple-crop-image-lib/res/values-cs/strings.xml -->
     <eat-comment />
 
     <string name="cancel">Zrušit</string>
