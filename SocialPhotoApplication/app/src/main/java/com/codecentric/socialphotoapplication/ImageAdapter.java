@@ -114,7 +114,7 @@ public class ImageAdapter extends BaseAdapter
         //final GridComponent picture = ((view == null)? new GridComponent(viewGroup.getContext()) : (GridComponent) view);
         final ImageView picture = ((view == null)? new ImageView(viewGroup.getContext()): (ImageView) view);
         
-        //picture.setImageResource(R.drawable.ic_pic);
+        picture.setPadding(5,5,5,5);
 
         final String path = (String) getItem(i);
         new Thread() {

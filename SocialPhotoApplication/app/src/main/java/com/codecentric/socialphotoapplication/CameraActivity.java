@@ -45,6 +45,7 @@ public class CameraActivity extends Activity {
     private boolean flashLight = false;
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final String TAG = "CAMERA ACTIVITY";
+    private  int numberOfCameras;
 
 
     @Override
@@ -56,7 +57,7 @@ public class CameraActivity extends Activity {
         mActionBar.hide();
 
         ImageButton switchCam = (ImageButton) findViewById(R.id.switchCamBtn);
-        int numberOfCameras = Camera.getNumberOfCameras();
+        numberOfCameras = Camera.getNumberOfCameras();
         if (numberOfCameras < 2) {
             switchCam.setVisibility(View.INVISIBLE);
         }
@@ -361,6 +362,22 @@ public class CameraActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        Button save = (Button) findViewById(R.id.buttonSave);
+        save.setVisibility(View.INVISIBLE);
+        Button crop = (Button) findViewById(R.id.buttonCrop);
+        crop.setVisibility(View.INVISIBLE);
+        Button cancel = (Button) findViewById(R.id.buttonCancel);
+        cancel.setVisibility(View.INVISIBLE);
+        Button capture = (Button) findViewById(R.id.button_capture);
+        capture.setVisibility(View.VISIBLE);
+        ImageButton change = (ImageButton) findViewById(R.id.switchCamBtn);
+        numberOfCameras = Camera.getNumberOfCameras();
+        if (numberOfCameras > 1) {
+            change.setVisibility(View.VISIBLE);
+        }
+        ImageButton flash = (ImageButton) findViewById(R.id.flashBTN);
+        flash.setVisibility(View.VISIBLE);
 
         cam = getCameraInstance(numCam);
 
